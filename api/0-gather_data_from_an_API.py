@@ -14,7 +14,7 @@ def get_employee_todo_progress(employee_id):
     if user_response.status_code != 200:
         print(f"Employee with ID {employee_id} not found.")
         sys.exit(1)
-    employee_name = user_response.json().get("name")
+    employee_name = user_response.json().get("username")
 
     # Fetch todos for the employee
     todos_response = requests.get(f"{base_url}/todos", params={"userId": employee_id})
