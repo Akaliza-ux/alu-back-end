@@ -1,25 +1,38 @@
-#!/usr/bin/python
+#!/usr/bin/python3
+"""
+Returns information about an employee's TODO list progress.
+"""
+
 import requests
 import sys
 
-if len(sys.argv) != 2:
-    print("Usage: {} <employee_id>".format(sys.argv[0]))
-    sys.exit(1)
 
-employee_id = sys.argv[1]
+if __name__ == "__main__":
+    employee_id = sys.argv[1]
 
-# Get employee info
-user_url = f"https://jsonplaceholder.typicode.com/users/{employee_id}"
-user = requests.get(user_url).json()
+    # Get employee information
+    user = requests.get(
+        "https://jsonplaceholder.typicode.com/users/{}".format(employee_id)
+    ).json()
 
-# Get TODOs
-todos_url = f"https://jsonplaceholder.typicode.com/todos?userId={employee_id}"
-todos = requests.get(todos_url).json()
+    # Get employee TODO list
+    todos = requests.get(
+        "https://jsonplaceholder.typicode.com/todos",
+        params={"userId": employee_id}
+    ).json()
 
-# Filter completed tasks
-done_tasks = [t for t in todos if t['completed']]
+    employee_name = user.get("name")
+    total_tasks = len(todos)
+    completed_tasks = [task for task in todos if task.get("completed")]
 
-# Print output in required format
-print(f"Employee {user['name']} is done with tasks({len(done_tasks)}/{len(todos)}):")
-for task in done_tasks:
-    print("\t", task['title'])
+    print(
+        "Employee {} is done with tasks({}/{}):".format(
+            employee_name,
+            len(completed_tasks),
+            total_tasks
+        )
+    )
+
+    for task in completed_tasks:
+        print("\t {}".format(task.get("title")))
+        
