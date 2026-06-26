@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""For a given employee ID, returns information about his/her TODO list progress."""
+"""Fetch TODO list"""
 
 import requests
 import sys
@@ -14,18 +14,27 @@ def get_employee_todo_progress(employee_id):
     if user_response.status_code != 200:
         print(f"Employee with ID {employee_id} not found.")
         sys.exit(1)
-    employee_name = user_response.json().get("username")
+    employee_name = user_response.json().get("name")
 
-    # Fetch todos for the employee
-    todos_response = requests.get(f"{base_url}/todos", params={"userId": employee_id})
+    # Fetch todos
+    todos_response = requests.get(
+        f"{base_url}/todos",
+        params={"userId": employee_id}
+    )
     todos = todos_response.json()
 
     total = len(todos)
     done_tasks = [task for task in todos if task.get("completed")]
     number_done = len(done_tasks)
 
-    # Display progress
-    print(f"Employee {employee_name} is done with tasks({number_done}/{total}):")
+    # Display
+    print(
+        "Employee {} is done with tasks({}/{}):".format(
+            employee_name,
+            number_done,
+            total
+        )
+    )
     for task in done_tasks:
         print(f"\t {task.get('title')}")
 
@@ -42,4 +51,3 @@ if __name__ == "__main__":
         sys.exit(1)
 
     get_employee_todo_progress(employee_id)
-    
