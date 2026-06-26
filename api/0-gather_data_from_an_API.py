@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""For a given employee ID, returns information about his/her TODO list progress."""
+"""Fetch TODO list"""
 
 import requests
 import sys
@@ -16,7 +16,7 @@ def get_employee_todo_progress(employee_id):
         sys.exit(1)
     employee_name = user_response.json().get("name")
 
-    # Fetch todos for the employee
+    # Fetch todos
     todos_response = requests.get(f"{base_url}/todos", params={"userId": employee_id})
     todos = todos_response.json()
 
@@ -24,7 +24,7 @@ def get_employee_todo_progress(employee_id):
     done_tasks = [task for task in todos if task.get("completed")]
     number_done = len(done_tasks)
 
-    # Display progress
+    # Display
     print(f"Employee {employee_name} is done with tasks({number_done}/{total}):")
     for task in done_tasks:
         print(f"\t {task.get('title')}")
