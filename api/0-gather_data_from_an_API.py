@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """
-Returns information about an employee's TODO list progress.
+Gather data from an API.
 """
 
 import requests
@@ -11,19 +11,21 @@ if __name__ == "__main__":
     employee_id = sys.argv[1]
 
     # Get employee information
-    user = requests.get(
+    user_response = requests.get(
         "https://jsonplaceholder.typicode.com/users/{}".format(employee_id)
-    ).json()
+    )
+    user = user_response.json()
 
     # Get employee TODO list
-    todos = requests.get(
+    todo_response = requests.get(
         "https://jsonplaceholder.typicode.com/todos",
         params={"userId": employee_id}
-    ).json()
+    )
+    todos = todo_response.json()
 
-    employee_name = user.get("name")
+    employee_name = user["name"]
     total_tasks = len(todos)
-    completed_tasks = [task for task in todos if task.get("completed")]
+    completed_tasks = [task for task in todos if task["completed"]]
 
     print(
         "Employee {} is done with tasks({}/{}):".format(
@@ -34,5 +36,5 @@ if __name__ == "__main__":
     )
 
     for task in completed_tasks:
-        print("\t {}".format(task.get("title")))
+        print("\t {}".format(task["title"]))
         
